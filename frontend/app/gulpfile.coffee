@@ -53,6 +53,7 @@ gulp.task 'fonts', ->
   gulp.src('./bower_components/fontawesome/fonts/*')
     .pipe gulp.dest("#{BUILD}/fonts")
 
+
 gulp.task 'deps', ['jsdeps', 'cssdeps', 'fonts']
 
 gulp.task 'watch', ->
