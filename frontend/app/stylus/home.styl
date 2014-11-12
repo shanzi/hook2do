@@ -52,6 +52,13 @@
     background-image url('/static/img/banner.png')
     background-repeat no-repeat
     background-position center center
+    background-size 1000px auto
+
+    @media (min-width: 640px)
+      background-size 1200px auto
+
+    @media (min-width: 960px)
+      background-size 1600px auto
 
     @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) 
       background-image url('/static/img/banner@2x.png')
