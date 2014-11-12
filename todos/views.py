@@ -1,20 +1,26 @@
 from rest_framework import viewsets
 
-from .serializers import ToDoItemList, ToDoItem
+from .serializers import ToDoItemListSerializer, ToDoItemSerializer
 
-class ToDoItemListViewSets(viewsets.ModelViewSet):
+class ToDoItemListViewSet(viewsets.ModelViewSet):
 
     """API viewsets to retrieve and modify ToDoItemList"""
-    serializer_class = ToDoItemList
+    serializer_class = ToDoItemListSerializer
 
     def get_queryset(self):
         return self.request.user.lists.all()
 
+    def pre_save(self, obj):
+        obj.owner = self.request.user
 
-class ToDoItemViewSets(viewsets.ModelViewSet):
+
+class ToDoItemViewSet(viewsets.ModelViewSet):
 
     """API viewsets to retrieve and modify ToDoItem"""
-    serializer_class = ToDoItem
+    serializer_class = ToDoItemSerializer
 
     def get_queryset(self):
         return self.request.user.todos.all()
+
+    def pre_save(self, obj):
+        obj.owner = self.request.user

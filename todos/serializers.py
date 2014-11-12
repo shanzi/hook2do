@@ -6,9 +6,11 @@ class ToDoItemListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ToDoItemList
+        exclude = ('owner', )
 
 
-class ToDoItemListSerializer(serializers.ModelSerializer):
+class ToDoItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ToDoItem
+        exclude = ('owner', )
