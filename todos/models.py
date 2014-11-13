@@ -7,6 +7,7 @@ TODO_ITEM_STATUS = (
     ('archived', 'archived status'),
 )
 
+
 class ToDoItemList(models.Model):
 
     """List to organize todo items """
@@ -34,3 +35,11 @@ class ToDoItem(models.Model):
 
     owner = models.ForeignKey(User, related_name='todos')
 
+
+class TimeLogEntry(models.Model):
+
+    """Each entry represents the user is working on the corresponding task during the period."""
+
+    todoItem = models.ForeignKey(ToDoItem, related_name="logs")
+    start_at = models.DateTimeField(auto_now_add=True)
+    end_at = models.DateTimeField(null=True, blank=True)
