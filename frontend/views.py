@@ -8,4 +8,4 @@ def home(request):
 
 
 def signup(request):
-    pass
+    return render_to_response('signup.html')
