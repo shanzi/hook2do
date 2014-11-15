@@ -47,7 +47,7 @@ class ResourceToDoItemViewSet(viewsets.ModelViewSet):
         try:
             serializer = ResourceToDoItemForOthersSerializer(data=request.DATA)
             if serializer.is_valid():
-                m = ResourceIdMapping.create(serializer.data["token"],
+                m = ResourceIdMapping.create(kwargs["token"],
                                              serializer.data["resource_id"],
                                              serializer.data["content"])
                 serializer = ResourceToDoItemForOthersSerializer(m)

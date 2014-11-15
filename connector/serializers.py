@@ -24,9 +24,9 @@ class ResourceToDoItemSerializer(serializers.ModelSerializer):
 
 class ResourceToDoItemForOthersSerializer(serializers.ModelSerializer):
 
-    token = serializers.CharField(max_length=32, source='token')
+    # token = serializers.CharField(max_length=32, source='token', read_only=True)
     content = serializers.CharField(max_length=1024, source='content')
-    status = serializers.CharField(max_length=16, source='status')
+    status = serializers.CharField(max_length=16, source='status', default='default')
 
     class Meta:
         model = ResourceIdMapping

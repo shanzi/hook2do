@@ -45,8 +45,8 @@ class ResourceIdMapping(models.Model):
 
     @staticmethod
     def create(token, resource_id, content):
-        channel = ResourceChannel.objects.filter(token=token)
-        item = channel.todoList.todos.create(content=content)
+        channel = ResourceChannel.objects.get(token=token)
+        item = channel.todoList.todos.create(owner=channel.todoList.owner, content=content)
         mapping = ResourceIdMapping.objects.create(owner=channel,
                                                    resource_id=resource_id,
                                                    todoItem=item)
