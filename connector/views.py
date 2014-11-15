@@ -20,15 +20,12 @@ class ResourceChannelViewSet(viewsets.ModelViewSet):
                 lst_id = serializer.data["todoList"]
                 lst = get_object_or_404(ToDoItemList, pk=lst_id)
                 resource_channel = ResourceChannel.bind_a_list(lst)
-                serializer = ResourceChannelSerializer(resource_channel)
+                serializer = ResourceChannelListSerializer(resource_channel)
                 return Response(serializer.data)
             return Response(status=status.HTTP_404_NOT_FOUND)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-
-class ResourceChannelListViewSet(viewsets.ModelViewSet):
-
-    serializer_class = ResourceChannelListSerializer
-
-    queryset = ResourceChannel.objects.all()
+    def list(self, request, *args, **kwargs):
+        serializer = ResourceChannelListSerializer(self.queryset, many=True)
+        return Response(serializer.data)

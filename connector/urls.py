@@ -2,12 +2,11 @@ from django.conf.urls import patterns, include, url
 
 from rest_framework.routers import DefaultRouter
 
-from .views import ResourceChannelViewSet, ResourceChannelListViewSet
+from .views import ResourceChannelViewSet
 
 router = DefaultRouter()
 
-router.register('register', ResourceChannelViewSet, base_name='register')
-router.register('list', ResourceChannelListViewSet, base_name='list')
+router.register('channels', ResourceChannelViewSet, base_name='channels')
 
 urlpatterns = patterns(
     '', 
