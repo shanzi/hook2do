@@ -3,6 +3,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models.signals import post_save, post_delete
+from django.utils import timezone
 
 from .pushers import push_create_or_update, push_delete
 from .models import ToDoItem, TimeLogEntry
@@ -52,7 +53,8 @@ class ToDoItemViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def snoozed(self, request):
-        items = ToDoItem.objects.filter(status='scheduled').all()
+        items = ToDoItem.objects.filter(status='scheduled',
+                                        due_at__gte=timezone.now()).order_by('due_at').all()
         serializer = ToDoItemSerializer(items, many=True)
         return Response(serializer.data)
 
