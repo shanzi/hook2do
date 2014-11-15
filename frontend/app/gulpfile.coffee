@@ -27,6 +27,7 @@ gulp.task 'stylus', ->
 
 gulp.task 'jsdeps', ->
   gulp.src([
+    './bower_components/jquery/dist/jquery.min.js'
     './bower_components/underscore/underscore-min.js'
     './bower_components/hammerjs/hammer.min.js'
     './bower_components/angular/angular.min.js'

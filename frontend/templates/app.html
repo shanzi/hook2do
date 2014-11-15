@@ -4,16 +4,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="csrf-token" content="{{ csrf_token }}">
-  <title>{{ title }}</title>
+  <title>hook2do</title>
   <link rel="stylesheet" href="{% static 'css/deps.css' %}" type="text/css">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}" type="text/css">
 </head>
 <body layout="horizontal">
-<md-sidenav layout="vertical" is-locked-open="$media('md')" component-id="left" class="md-sidenav-left md-whiteframe-z2">
+<md-sidenav layout="vertical" is-locked-open="$media('md')" component-id="left" class="md-sidenav-left md-whiteframe-z1">
 <md-toolbar>
 <h1 class="md-toolbar-tools">hook2do</h1>
 </md-toolbar>
-<md-content flex></md-content>
+<md-content scroll-y flex ng-controller="menuCtrl as menu">
+{% verbatim %}
+<section class="menu-section">
+  <a href="#inbox" class="menu-item inbox" ink-ripple ng-class="{selected: menu.isSelected(-1)}"
+    ng-click="menu.showInbox()"
+    >
+    <i class="fa fa-inbox"></i>Inbox
+    <div class="md-ripple-container"></div>
+  </a>
+  <a href="#snoozed" class="menu-item snoozed" ink-ripple ng-class="{selected: menu.isSelected(-2)}"
+    ng-click="menu.showSnoozed()"
+    >
+    <i class="fa fa-clock-o"></i>Snoozed
+  </a>
+  <a href="#done" class="menu-item done" ink-ripple ng-class="{selected: menu.isSelected(-3)}"
+    ng-click="menu.showDone()"
+    >
+    <i class="fa fa-check"></i>Done
+  </a>
+</section>
+<section class="menu-section" >
+  <div class="section-title">lists</div>
+  <div class="menu-item" ng-class="{selected: menu.isSelected(item.id)}" ng-repeat="item in menu.lists"
+    ink-ripple ng-click="menu.showList(item.id)">
+    <i class="fa fa-circle-o"></i><input
+    type="text"
+    ng-model="item.name"
+    ng-show="menu.isSelected(item.id)"
+    ng-blur="menu.saveList(item)"
+    ng-attr-id="list-id-{{ item.id }}"
+    /><span
+      ng-bind="item.name" ng-hide="menu.isSelected(item.id)"></span>
+  </div>
+  <a class="menu-item add-list" ng-click="menu.addList()" ink-ripple>
+    <i class="fa fa-plus-square"></i>New List
+  </a>
+</section>
+{% endverbatim %}
+</md-content>
 </md-sidenav>
 <div layout="vertical" layout-fill role="main">
   <md-toolbar>
