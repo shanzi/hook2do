@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import ToDoItemList, ToDoItem
+from .models import ToDoItemList, ToDoItem, TimeLogEntry
+
 
 class ToDoItemListSerializer(serializers.ModelSerializer):
 
@@ -14,3 +15,9 @@ class ToDoItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ToDoItem
         exclude = ('owner', )
+
+
+class TimeLogEntrySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TimeLogEntry

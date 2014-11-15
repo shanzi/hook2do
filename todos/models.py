@@ -1,4 +1,6 @@
-from django.db import models
+from django.db import models, transaction
+from django.db import IntegrityError
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 TODO_ITEM_STATUS = (
@@ -43,3 +45,28 @@ class TimeLogEntry(models.Model):
     todoItem = models.ForeignKey(ToDoItem, related_name="logs")
     start_at = models.DateTimeField(auto_now_add=True)
     end_at = models.DateTimeField(null=True, blank=True)
+
+    @staticmethod
+    @transaction.atomic
+    def get_started(item):
+        if TimeLogEntry.objects.filter(end_at__isnull=True).exists():
+            return False
+        sid = transaction.savepoint()
+        logEntry = TimeLogEntry.objects.create(todoItem=item)
+        if TimeLogEntry.objects.filter(end_at__isnull=True).count() > 1:
+            transaction.savepoint_rollback(sid)
+            return False
+        return logEntry
+
+    @staticmethod
+    def finish(item):
+        if not TimeLogEntry.objects.filter(end_at__isnull=True).exists():
+            return False
+        log_entry = None
+        try:
+            log_entry = TimeLogEntry.objects.get(end_at__isnull=True)
+        except IntegrityError:
+            return False
+        log_entry.end_at = timezone.now()
+        log_entry.save()
+        return log_entry
