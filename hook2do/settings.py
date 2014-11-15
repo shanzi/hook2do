@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     # local apps
     'todos',
     'frontend',
+    'connector',
 )
 
 MIDDLEWARE_CLASSES = (

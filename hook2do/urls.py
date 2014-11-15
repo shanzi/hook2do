@@ -6,6 +6,7 @@ urlpatterns = patterns(
     '',
     url('', include('frontend.urls')),
     url(r'^api/', include('todos.urls')),
+    url(r'^channel/', include('connector.urls')),
 )
 
 if settings.DEBUG:
