@@ -47,7 +47,7 @@ angular.module('todoApp', ['ngRoute', 'ngMaterial', 'ngResource', 'angular-loadi
 
 
 
-},{"./controllers/app":2,"./controllers/done":3,"./controllers/inbox":4,"./controllers/list":5,"./controllers/menu":6,"./controllers/snoozed":7,"./todomanager":8}],2:[function(require,module,exports){
+},{"./controllers/app":2,"./controllers/done":3,"./controllers/inbox":4,"./controllers/list":5,"./controllers/menu":6,"./controllers/snoozed":8,"./todomanager":9}],2:[function(require,module,exports){
 var AppController;
 
 AppController = (function() {
@@ -110,8 +110,8 @@ DoneController = (function(_super) {
     return value.status === "archived";
   };
 
-  function DoneController($todoManager) {
-    DoneController.__super__.constructor.call(this, $todoManager);
+  function DoneController($todoManager, $mdDialog) {
+    DoneController.__super__.constructor.call(this, $todoManager, $mdDialog);
   }
 
   return DoneController;
@@ -138,8 +138,8 @@ InboxController = (function(_super) {
     return value.itemlist === null && value.status === 'default';
   };
 
-  function InboxController($todoManager) {
-    InboxController.__super__.constructor.call(this, $todoManager);
+  function InboxController($todoManager, $mdDialog) {
+    InboxController.__super__.constructor.call(this, $todoManager, $mdDialog);
   }
 
   return InboxController;
@@ -151,23 +151,17 @@ module.exports = InboxController;
 
 
 },{"./list":5}],5:[function(require,module,exports){
-var ListController;
+var ListController, SnoozeDialogController;
+
+SnoozeDialogController = require('./snooze_dialog');
 
 ListController = (function() {
   ListController.prototype.listClass = 'list';
 
   ListController.prototype.showActions = true;
 
-  function ListController($todoManager, $routeParams) {
-    this.$todoManager = $todoManager;
-    if ($routeParams) {
-      this.list_id = parseInt($routeParams.id);
-    }
-    this.todos = this.$todoManager.getTodos();
-  }
-
   ListController.prototype._todoFilter = function(value, index) {
-    return value.itemlist === this.list_id;
+    return value.itemlist === this.list_id && value.status === 'default';
   };
 
   ListController.prototype.todoFilter = function() {
@@ -207,6 +201,50 @@ ListController = (function() {
 
   ListController.prototype.doneAll = function() {};
 
+  ListController.prototype.todoDone = function(todo) {
+    if (todo.status === "archived") {
+      if (todo.due_at) {
+        todo.status = "scheduled";
+      } else {
+        todo.status = "default";
+      }
+    } else {
+      todo.status = "archived";
+    }
+    return todo.$update();
+  };
+
+  ListController.prototype.todoSnooze = function(todo) {
+    return this.$mdDialog.show({
+      templateUrl: '/static/templates/snooze_picker.html',
+      controller: SnoozeDialogController,
+      controllerAs: 'snooze'
+    }).then((function(_this) {
+      return function(answer) {
+        todo.due_at = answer;
+        if (todo.due_at) {
+          todo.status = "scheduled";
+        } else {
+          todo.status = "default";
+        }
+        return todo.$update();
+      };
+    })(this));
+  };
+
+  ListController.prototype.todoDelete = function(todo) {
+    return this.$todoManager.deleteTodo(todo);
+  };
+
+  function ListController($todoManager, $mdDialog, $routeParams) {
+    this.$todoManager = $todoManager;
+    this.$mdDialog = $mdDialog;
+    if ($routeParams) {
+      this.list_id = parseInt($routeParams.id);
+    }
+    this.todos = this.$todoManager.getTodos();
+  }
+
   return ListController;
 
 })();
@@ -215,7 +253,7 @@ module.exports = ListController;
 
 
 
-},{}],6:[function(require,module,exports){
+},{"./snooze_dialog":7}],6:[function(require,module,exports){
 var MenuController;
 
 MenuController = (function() {
@@ -317,6 +355,62 @@ module.exports = MenuController;
 
 
 },{}],7:[function(require,module,exports){
+var SnoozeDialogController;
+
+SnoozeDialogController = (function() {
+  SnoozeDialogController.prototype.choices = [];
+
+  SnoozeDialogController.prototype.answer = function(answer) {
+    return this.$mdDialog.hide(answer);
+  };
+
+  SnoozeDialogController.prototype.cancel = function() {
+    return this.$mdDialog.cancel();
+  };
+
+  SnoozeDialogController.prototype.addChoice = function(readable, date) {
+    return this.choices.push({
+      datetimeReadable: readable,
+      datetimeText: "" + (date.getMonth() + 1) + "/" + (date.getDate()) + " " + (date.getHours()) + ":00",
+      datetime: date
+    });
+  };
+
+  function SnoozeDialogController($mdDialog) {
+    var laterToday, nextWeek, now, thisWeekend, tomorrow, _ref;
+    this.$mdDialog = $mdDialog;
+    this.choices = [];
+    now = new Date();
+    if (now.getHours() < 19) {
+      laterToday = new Date();
+      laterToday.setHours(19);
+      this.addChoice('Later Today', laterToday);
+    }
+    tomorrow = new Date();
+    tomorrow.setHours(8);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    this.addChoice('Tomorrow', tomorrow);
+    if ((1 < (_ref = now.getDay()) && _ref < 6)) {
+      thisWeekend = new Date();
+      thisWeekend.setHours(8);
+      thisWeekend.setDate(thisWeekend.getDate() + 6 - now.getDay());
+      this.addChoice('This Weekend', thisWeekend);
+    }
+    nextWeek = new Date();
+    nextWeek.setHours(8);
+    nextWeek.setDate(nextWeek.getDate() + 8 - now.getDay());
+    this.addChoice('Next Week', nextWeek);
+  }
+
+  return SnoozeDialogController;
+
+})();
+
+module.exports = SnoozeDialogController;
+
+
+
+},{}],8:[function(require,module,exports){
 var ListController, SnoozedController,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -334,8 +428,8 @@ SnoozedController = (function(_super) {
     return value.status === 'scheduled';
   };
 
-  function SnoozedController($todoManager) {
-    SnoozedController.__super__.constructor.call(this, $todoManager);
+  function SnoozedController($todoManager, $mdDialog) {
+    SnoozedController.__super__.constructor.call(this, $todoManager, $mdDialog);
   }
 
   return SnoozedController;
@@ -346,7 +440,7 @@ module.exports = SnoozedController;
 
 
 
-},{"./list":5}],8:[function(require,module,exports){
+},{"./list":5}],9:[function(require,module,exports){
 var RES_SETUP, TodoManager;
 
 RES_SETUP = {

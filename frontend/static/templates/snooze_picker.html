@@ -1,0 +1,15 @@
+<md-dialog aria-label="Snooze To-Do" id="snooze-dialog">
+  <div class="snooze-header">
+    <i class="fa fa-clock-o"></i>
+    Snooze Task</div>
+  <div class="snooze-actions">
+    <div class="snooze-action" ink-ripple ng-repeat="choice in snooze.choices" ng-click="snooze.answer(choice.datetime)">
+      <span class="snooze-datetime" ng-bind="choice.datetimeText"></span>
+      <span class="snooze-readable" ng-bind="choice.datetimeReadable"></span>
+    </div>
+    <div class="snooze-action snooze-action-cancel" ng-click="snooze.cancel()">
+      cancel
+    </div>
+  </div>
+
+</md-dialog>

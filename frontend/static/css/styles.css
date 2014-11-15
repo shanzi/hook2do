@@ -2749,10 +2749,75 @@ md-sidenav .section-title {
 .todo-list.done .todo-content {
   color: #fff;
 }
+.todo-item-actions {
+  cursor: pointer;
+  float: right;
+  width: 30px;
+  margin-right: -60px;
+  margin-top: -15px;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+.todo-item-actions .todo-item-done {
+  color: #8bc34a;
+}
+.todo-item-actions .todo-item-snooze {
+  color: #fbc02d;
+}
+.todo-item-actions .todo-item-delete {
+  color: #e65100;
+}
+.todo-item:hover .todo-item-actions {
+  opacity: 1;
+}
 md-toolbar.md-grey-theme {
   color: #fff;
 }
 md-toolbar {
   transition: 0.4s ease-in-out;
   transition-property: color, background-color;
+}
+#snooze-dialog {
+  width: 400px;
+}
+#snooze-dialog .snooze-header,
+#snooze-dialog .snooze-action,
+#snooze-dialog .snooze-action-cancel {
+  line-height: 50px;
+  color: #666;
+  padding: 0 10px;
+}
+#snooze-dialog .snooze-header {
+  color: #fff;
+  background: #ffc200;
+  text-align: center;
+  font-weight: bold;
+  font-size: 22px;
+}
+#snooze-dialog .snooze-action {
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+}
+#snooze-dialog .snooze-action:hover {
+  background: #008bee;
+  color: #fff;
+}
+#snooze-dialog .snooze-action .snooze-datetime {
+  float: right;
+}
+#snooze-dialog .snooze-action .snooze-readable {
+  font-weight: bold;
+}
+#snooze-dialog .snooze-action-cancel,
+#snooze-dialog .snooze-action-remove {
+  background: #eee;
+  font-size: 22px;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+}
+#snooze-dialog .snooze-action-remove {
+  background-color: #e65100;
+  color: #fff;
 }

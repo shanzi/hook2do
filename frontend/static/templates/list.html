@@ -9,6 +9,17 @@
   </div>
   <div ng-class="list.listClass" class="todo-list">
     <div ng-repeat="todo in list.todos|filter: list.todoFilter()" class="todo-item">
+      <div class="todo-item-actions">
+        <div class="todo-item-done" ng-click="list.todoDone(todo)">
+          <i class="fa fa-check"></i>
+        </div>
+        <div class="todo-item-snooze" ng-click="list.todoSnooze(todo)">
+          <i class="fa fa-clock-o"></i>
+        </div>
+        <div class="todo-item-delete" ng-click="list.todoDelete(todo)">
+          <i class="fa fa-remove"></i>
+        </div>
+      </div>
       <input 
       class="todo-content"
       ng-model="todo.content"
