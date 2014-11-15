@@ -27,18 +27,17 @@ class TodoManager
   createTodo: (todoItem, callback) ->
     newTodo = new @_TodosRes(todoItem)
     newTodo.$save =>
-      @getTodos().then => @todos.push(newTodo)
+      @todos.unshift(newTodo)
       callback(newTodo) if callback
 
   deleteList: (listItem) ->
     index = _.indexOf @lists, listItem
-    console.log index
     @lists.splice index, 1
-    console.log @lists
     listItem.$delete()
 
   deleteTodo: (todoItem) ->
-    @todos = _.without @todos, todoItem
+    index = _.indexOf @todos, todoItem
+    @todos.splice index, 1
     todoItem.$delete()
 
 module.exports = ($resource) ->

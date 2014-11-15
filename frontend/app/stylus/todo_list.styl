@@ -1,0 +1,82 @@
+gradient(n, sr, sg, sb, er, eg, eb)
+  dr = (er - sr)/(n - 1)
+  dg = (eg - sg)/(n - 1)
+  db = (eb - sb)/(n - 1)
+  for i in 0..(n - 1)
+    .todo-item:nth-child({i+1}):nth-last-child({n - i})
+      background-color rgb(sr+dr*i, sg+dg*i, sb+db*i)
+
+gradient-default(sr, sg, sb, er, eg, eb)
+  dr = (er - sr)/19
+  dg = (eg - sg)/19
+  db = (eb - sb)/19
+
+  .todo-item
+    background-color rgb(er, eg, eb)
+
+  for i in 0..19
+    .todo-item:nth-child({i+1})
+      background-color rgb(er - dr*i, eg - dg*i, eb - db*i)
+
+gradient-reverse(sr, sg, sb, er, eg, eb)
+  dr = (er - sr)/4
+  dg = (eg - sg)/4
+  db = (eb - sb)/4
+  for i in 1..4
+    .todo-item:nth-last-child({i})
+      background-color rgb(er - dr*i, eg - dg*i, eb - db*i)
+
+gradient-group(sr, sg, sb, er, eg, eb)
+  gradient-default(sr, sg, sb, er, eg, eb)
+  gradient-reverse(sr, sg, sb, er, eg, eb)
+  for i in 5...20
+    gradient(i, sr, sg, sb, er, eg, eb)
+
+.todo-list-wrap
+  max-width 720px
+  margin 0 auto
+  padding 20px 0
+
+.todo-list-actions
+  padding 10px 0
+
+  .action-new
+    color #00A6F8
+
+  .action-done
+    color #70CC49
+
+
+.todo-list
+  .todo-item
+    width 100%
+    padding 20px
+    transition background-color 0.2s ease-out
+
+  .todo-content
+    display block
+    font-size 18px
+    line-height 30px
+    width 100%
+    height 30px
+    outline none
+    border none
+    background transparent
+    color #666
+    
+  gradient-group(200, 200, 200, 255, 255, 255)
+
+.todo-list.inbox
+  gradient-group(0, 139, 238, 131, 201, 252)
+  .todo-content
+    color #fff
+
+.todo-list.snoozed
+  gradient-group(255, 95, 0, 254, 241, 28)
+  .todo-content
+    color #fff
+
+.todo-list.done
+  gradient-group(75, 167, 55, 134, 212, 100)
+  .todo-content
+    color #fff

@@ -26,7 +26,7 @@ class ToDoItemViewSet(viewsets.ModelViewSet):
     serializer_class = ToDoItemSerializer
 
     def get_queryset(self):
-        return self.request.user.todos.all()
+        return self.request.user.todos.order_by('-created_at').all()
 
     def pre_save(self, obj):
         obj.owner = self.request.user
