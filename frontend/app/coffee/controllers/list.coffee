@@ -9,7 +9,7 @@ class ListController
     @todos = @$todoManager.getTodos()
 
   _todoFilter: (value, index) ->
-    value.itemlist == @list_id
+    value.itemlist == @list_id and value.status == 'default'
 
   todoFilter: ->
     return (value, index) => @_todoFilter(value, index)
