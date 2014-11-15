@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models.signals import post_save, post_delete
@@ -48,6 +48,12 @@ class ToDoItemViewSet(viewsets.ModelViewSet):
         if not log_entry:
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = TimeLogEntrySerializer(log_entry)
+        return Response(serializer.data)
+
+    @list_route(methods=['get'])
+    def snoozed(self, request):
+        items = ToDoItem.objects.filter(status='scheduled').all()
+        serializer = ToDoItemSerializer(items, many=True)
         return Response(serializer.data)
 
 post_save.connect(push_create_or_update, sender=ToDoItem)
