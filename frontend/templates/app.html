@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="todoApp" ng-controller="appCtrl as app">
 <head>
   <meta charset="UTF-8">
   <meta name="csrf-token" content="{{ csrf_token }}">
@@ -8,7 +8,23 @@
   <link rel="stylesheet" href="{% static 'css/deps.css' %}" type="text/css">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}" type="text/css">
 </head>
-<body>
+<body layout="horizontal">
+<md-sidenav layout="vertical" is-locked-open="$media('md')" component-id="left" class="md-sidenav-left md-whiteframe-z2">
+<md-toolbar>
+<h1 class="md-toolbar-tools">hook2do</h1>
+</md-toolbar>
+<md-content flex></md-content>
+</md-sidenav>
+<div layout="vertical" layout-fill role="main">
+  <md-toolbar>
+  <div class="md-toolbar-tools">
+    <md-button aria-label="Show menu" ng-click="app.showMenu()" hide-md>
+    <i class="fa fa-bars"></i>
+    </md-button>
+    sub title
+  </div>
+  </md-toolbar>
+</div>
 <script type="text/javascript" src="{% static 'js/deps.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
 </body>
