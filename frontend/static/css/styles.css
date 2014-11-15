@@ -195,3 +195,58 @@
 #signup a {
   color: #00cc83;
 }
+md-sidenav .menu-section {
+  padding: 10px 0;
+}
+md-sidenav .menu-item {
+  display: block;
+  width: 100%;
+  line-height: 48px;
+  height: 48px;
+  font-size: 18px;
+  overflow: hidden;
+  text-decoration: none;
+  padding: 0 10px;
+  cursor: pointer;
+  position: relative;
+  color: #666;
+  transition: background 0.2s ease-out;
+}
+md-sidenav .menu-item i {
+  width: 30px;
+}
+md-sidenav .menu-item.inbox {
+  color: #00a6f8;
+}
+md-sidenav .menu-item.snoozed {
+  color: #fbc02d;
+}
+md-sidenav .menu-item.done {
+  color: #8bc34a;
+}
+md-sidenav .menu-item input {
+  border: none;
+  outline: none;
+  color: #666;
+  font-size: 18px;
+  width: 180px;
+  background: transparent;
+}
+md-sidenav .menu-item.selected {
+  background: #eee;
+}
+md-sidenav .menu-item.inbox.selected {
+  background: RGBA(0, 166, 248, 0.1);
+}
+md-sidenav .menu-item.snoozed.selected {
+  background: RGBA(255, 194, 0, 0.1);
+}
+md-sidenav .menu-item.done.selected {
+  background: RGBA(112, 204, 73, 0.1);
+}
+md-sidenav .section-title {
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #aaa;
+  padding: 5px 10px;
+}
