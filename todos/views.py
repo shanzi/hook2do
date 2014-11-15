@@ -2,10 +2,11 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.db.models.signals import post_save, post_delete
 
+from .pushers import push_create_or_update, push_delete
 from .models import ToDoItem, TimeLogEntry
 from .serializers import ToDoItemListSerializer, ToDoItemSerializer, TimeLogEntrySerializer
-
 
 
 class ToDoItemListViewSet(viewsets.ModelViewSet):
@@ -48,6 +49,10 @@ class ToDoItemViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = TimeLogEntrySerializer(log_entry)
         return Response(serializer.data)
+
+post_save.connect(push_create_or_update, sender=ToDoItem)
+
+post_delete.connect(push_delete, sender=ToDoItem)
 
 
 class TimeLogEntryViewSet(viewsets.ModelViewSet):
