@@ -1,12 +1,13 @@
 ListController = require './list'
 
 class SnoozedController extends ListController
-  constructor: ($todoManager) -> super($todoManager)
-
   listClass: 'snoozed'
 
-  todoFilter: (value, index) ->
+  showActions: false
+
+  _todoFilter: (value, index) ->
     value.status == 'scheduled'
 
+  constructor: ($todoManager) -> super($todoManager)
 
 module.exports = SnoozedController

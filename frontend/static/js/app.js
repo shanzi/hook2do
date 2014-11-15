@@ -28,7 +28,7 @@ angular.module('todoApp', ['ngRoute', 'ngMaterial', 'ngResource', 'angular-loadi
     templateUrl: '/static/templates/list.html',
     controller: 'doneCtrl',
     controllerAs: 'list'
-  }).when('/list/:id', {
+  }).when('/lists/:id', {
     templateUrl: '/static/templates/list.html',
     controller: 'listCtrl',
     controllerAs: 'list'
@@ -51,13 +51,37 @@ angular.module('todoApp', ['ngRoute', 'ngMaterial', 'ngResource', 'angular-loadi
 var AppController;
 
 AppController = (function() {
+  AppController.prototype.theme = 'default';
+
   AppController.prototype.showMenu = function() {
-    console.log('test');
     return this.$mdSidenav('left').open();
   };
 
-  function AppController($mdSidenav) {
+  AppController.prototype.changeTheme = function() {
+    var path;
+    path = this.$location.path();
+    if (path.match(/^\/inbox/)) {
+      return this.theme = 'default';
+    } else if (path.match(/^\/snoozed/)) {
+      return this.theme = 'yellow';
+    } else if (path.match(/^\/done/)) {
+      return this.theme = 'green';
+    } else if (path.match(/^\/lists\/(\d+)\/?$/)) {
+      return this.theme = 'grey';
+    } else {
+      return this.$location.path('/inbox');
+    }
+  };
+
+  function AppController($mdSidenav, $rootScope, $location) {
     this.$mdSidenav = $mdSidenav;
+    this.$rootScope = $rootScope;
+    this.$location = $location;
+    this.$rootScope.$on('$locationChangeSuccess', (function(_this) {
+      return function() {
+        return _this.changeTheme();
+      };
+    })(this));
   }
 
   return AppController;
@@ -78,15 +102,17 @@ ListController = require('./list');
 DoneController = (function(_super) {
   __extends(DoneController, _super);
 
+  DoneController.prototype.listClass = 'done';
+
+  DoneController.prototype.showActions = false;
+
+  DoneController.prototype._todoFilter = function(value, index) {
+    return value.status === "archived";
+  };
+
   function DoneController($todoManager) {
     DoneController.__super__.constructor.call(this, $todoManager);
   }
-
-  DoneController.prototype.listClass = 'done';
-
-  DoneController.prototype.todoFilter = function(value, index) {
-    return value.status === "archived";
-  };
 
   return DoneController;
 
@@ -106,15 +132,15 @@ ListController = require('./list');
 InboxController = (function(_super) {
   __extends(InboxController, _super);
 
+  InboxController.prototype.listClass = 'inbox';
+
+  InboxController.prototype._todoFilter = function(value, index) {
+    return value.itemlist === null && value.status === 'default';
+  };
+
   function InboxController($todoManager) {
     InboxController.__super__.constructor.call(this, $todoManager);
   }
-
-  InboxController.prototype.listClass = 'inbox';
-
-  InboxController.prototype.todoFilter = function(value, index) {
-    return value.itemlist === null && value.status === 'default';
-  };
 
   return InboxController;
 
@@ -130,16 +156,26 @@ var ListController;
 ListController = (function() {
   ListController.prototype.listClass = 'list';
 
+  ListController.prototype.showActions = true;
+
   function ListController($todoManager, $routeParams) {
     this.$todoManager = $todoManager;
     if ($routeParams) {
-      this.list_id = $routeParams.id;
+      this.list_id = parseInt($routeParams.id);
     }
     this.todos = this.$todoManager.getTodos();
   }
 
-  ListController.prototype.todoFilter = function(value, index) {
+  ListController.prototype._todoFilter = function(value, index) {
     return value.itemlist === this.list_id;
+  };
+
+  ListController.prototype.todoFilter = function() {
+    return (function(_this) {
+      return function(value, index) {
+        return _this._todoFilter(value, index);
+      };
+    })(this);
   };
 
   ListController.prototype.saveTodo = function(todo) {
@@ -152,8 +188,11 @@ ListController = (function() {
   };
 
   ListController.prototype.addTodo = function() {
+    var listid;
+    listid = this.list_id ? this.list_id : null;
     return this.$todoManager.createTodo({
-      content: 'empty todo'
+      content: 'empty todo',
+      itemlist: listid
     }, (function(_this) {
       return function(newTodo) {
         var focusInput;
@@ -182,13 +221,9 @@ var MenuController;
 MenuController = (function() {
   MenuController.currentID = -1;
 
-  function MenuController($todoManager) {
-    this.$todoManager = $todoManager;
-    this.lists = this.$todoManager.getLists();
-  }
-
   MenuController.prototype.showList = function(id) {
-    return this.currentID = id;
+    this.currentID = id;
+    return this.$location.path("/lists/" + id);
   };
 
   MenuController.prototype.showInbox = function() {
@@ -208,11 +243,19 @@ MenuController = (function() {
   };
 
   MenuController.prototype.saveList = function(listitem) {
+    var last;
     if (listitem.name.trim()) {
       return listitem.$update();
     } else {
-      listitem.name = list.item.name.trim();
-      return this.$todoManager.deleteList(listitem);
+      listitem.name = listitem.name.trim();
+      this.$todoManager.deleteList(listitem);
+      if (this.lists.length) {
+        last = _.last(this.lists);
+        this.$location.path("/lists/" + last.id);
+        return this.currentID = last.id;
+      } else {
+        return this.$location.path('/inbox');
+      }
     }
   };
 
@@ -223,6 +266,7 @@ MenuController = (function() {
       return function(newlist) {
         var focusInput;
         _this.currentID = newlist.id;
+        _this.$location.path("/lists/" + newlist.id);
         newlist.name = "";
         focusInput = function() {
           return $("#list-id-" + newlist.id).focus();
@@ -231,6 +275,38 @@ MenuController = (function() {
       };
     })(this));
   };
+
+  MenuController.prototype.selectItem = function() {
+    var id, match, path;
+    path = this.$location.path();
+    if (path.match(/^\/inbox/)) {
+      return this.currentID = -1;
+    } else if (path.match(/^\/snoozed/)) {
+      return this.currentID = -2;
+    } else if (path.match(/^\/done/)) {
+      return this.currentID = -3;
+    } else {
+      match = path.match(/^\/lists\/(\d+)\/?$/);
+      if (match) {
+        id = match[1];
+        return this.currentID = parseInt(id);
+      } else {
+        return this.$location.path('/inbox');
+      }
+    }
+  };
+
+  function MenuController($rootScope, $todoManager, $location) {
+    this.$rootScope = $rootScope;
+    this.$todoManager = $todoManager;
+    this.$location = $location;
+    this.lists = this.$todoManager.getLists();
+    this.$rootScope.$on('$locationChangeSuccess', (function(_this) {
+      return function() {
+        return _this.selectItem();
+      };
+    })(this));
+  }
 
   return MenuController;
 
@@ -250,15 +326,17 @@ ListController = require('./list');
 SnoozedController = (function(_super) {
   __extends(SnoozedController, _super);
 
+  SnoozedController.prototype.listClass = 'snoozed';
+
+  SnoozedController.prototype.showActions = false;
+
+  SnoozedController.prototype._todoFilter = function(value, index) {
+    return value.status === 'scheduled';
+  };
+
   function SnoozedController($todoManager) {
     SnoozedController.__super__.constructor.call(this, $todoManager);
   }
-
-  SnoozedController.prototype.listClass = 'snoozed';
-
-  SnoozedController.prototype.todoFilter = function(value, index) {
-    return value.status === 'scheduled';
-  };
 
   return SnoozedController;
 

@@ -2749,3 +2749,10 @@ md-sidenav .section-title {
 .todo-list.done .todo-content {
   color: #fff;
 }
+md-toolbar.md-grey-theme {
+  color: #fff;
+}
+md-toolbar {
+  transition: 0.4s ease-in-out;
+  transition-property: color, background-color;
+}

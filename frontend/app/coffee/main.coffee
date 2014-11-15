@@ -41,7 +41,7 @@ angular.module('todoApp', [
         templateUrl: '/static/templates/list.html'
         controller: 'doneCtrl'
         controllerAs: 'list'
-      .when '/list/:id',
+      .when '/lists/:id',
         templateUrl: '/static/templates/list.html'
         controller: 'listCtrl'
         controllerAs: 'list'

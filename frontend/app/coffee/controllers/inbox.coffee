@@ -1,12 +1,12 @@
 ListController = require './list'
 
 class InboxController extends ListController
-  constructor: ($todoManager) -> super($todoManager)
-
   listClass: 'inbox'
 
-  todoFilter: (value, index) ->
+  _todoFilter: (value, index) ->
     value.itemlist == null and value.status == 'default'
+
+  constructor: ($todoManager) -> super($todoManager)
 
 
 module.exports = InboxController

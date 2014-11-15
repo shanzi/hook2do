@@ -2,12 +2,17 @@
 class ListController
   listClass: 'list'
 
+  showActions: true
+
   constructor: (@$todoManager, $routeParams) ->
-    @list_id = $routeParams.id if $routeParams
+    @list_id = parseInt($routeParams.id) if $routeParams
     @todos = @$todoManager.getTodos()
 
-  todoFilter: (value, index) ->
+  _todoFilter: (value, index) ->
     value.itemlist == @list_id
+
+  todoFilter: ->
+    return (value, index) => @_todoFilter(value, index)
 
   saveTodo: (todo) ->
     if todo.content.trim()
@@ -17,7 +22,8 @@ class ListController
       @$todoManager.deleteTodo(todo)
 
   addTodo: ->
-    @$todoManager.createTodo content:'empty todo', (newTodo)=>
+    listid = if @list_id then @list_id else null
+    @$todoManager.createTodo content:'empty todo', itemlist: listid, (newTodo)=>
       newTodo.content = ""
       focusInput = =>
         $("#todo-id-#{newTodo.id}").focus()

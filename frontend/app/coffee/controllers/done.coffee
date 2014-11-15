@@ -1,12 +1,14 @@
 ListController = require './list'
 
 class DoneController extends ListController
-  constructor: ($todoManager) -> super($todoManager)
-
   listClass: 'done'
 
-  todoFilter: (value, index) ->
+  showActions: false
+
+  _todoFilter: (value, index) ->
     value.status == "archived"
+
+  constructor: ($todoManager) -> super($todoManager)
 
 
 module.exports = DoneController

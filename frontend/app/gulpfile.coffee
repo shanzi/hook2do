@@ -44,6 +44,9 @@ gulp.task 'jsdeps', ->
 gulp.task 'cssdeps', ->
   gulp.src([
     './bower_components/angular-material/angular-material.min.css'
+    './bower_components/angular-material/themes/yellow-theme.css'
+    './bower_components/angular-material/themes/green-theme.css'
+    './bower_components/angular-material/themes/grey-theme.css'
     './bower_components/angular-loading-bar/build/loading-bar.min.css'
     './bower_components/fontawesome/css/font-awesome.min.css'
     ])
