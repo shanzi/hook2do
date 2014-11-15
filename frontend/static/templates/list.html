@@ -1,0 +1,20 @@
+<div class="todo-list-wrap">
+  <div class="todo-list-actions" ng-if="list.showActions">
+    <md-button ng-click="list.addTodo()" aria-label="Add todo">
+    <i class="fa fa-plus action-new"></i> New
+    </md-button>
+    <md-button ng-click="list.doneAll()" aria-label="Done all">
+    <i class="fa fa-check action-done"></i> Done
+    </md-button>
+  </div>
+  <div ng-class="list.listClass" class="todo-list">
+    <div ng-repeat="todo in list.todos|filter: list.todoFilter()" class="todo-item">
+      <input 
+      class="todo-content"
+      ng-model="todo.content"
+      ng-blur="list.saveTodo(todo)"
+      ng-attr-id="todo-id-{{ todo.id }}"
+      ></input>
+    </div>
+  </div>
+</div>

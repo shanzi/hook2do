@@ -32,6 +32,7 @@ gulp.task 'jsdeps', ->
     './bower_components/hammerjs/hammer.min.js'
     './bower_components/angular/angular.min.js'
     './bower_components/angular-aria/angular-aria.min.js'
+    './bower_components/angular-route/angular-route.min.js'
     './bower_components/angular-animate/angular-animate.min.js'
     './bower_components/angular-material/angular-material.min.js'
     './bower_components/angular-resource/angular-resource.min.js'
@@ -43,6 +44,9 @@ gulp.task 'jsdeps', ->
 gulp.task 'cssdeps', ->
   gulp.src([
     './bower_components/angular-material/angular-material.min.css'
+    './bower_components/angular-material/themes/yellow-theme.css'
+    './bower_components/angular-material/themes/green-theme.css'
+    './bower_components/angular-material/themes/grey-theme.css'
     './bower_components/angular-loading-bar/build/loading-bar.min.css'
     './bower_components/fontawesome/css/font-awesome.min.css'
     ])
