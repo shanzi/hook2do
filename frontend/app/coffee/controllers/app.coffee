@@ -21,5 +21,6 @@ class AppController
 
   constructor: (@$mdSidenav, @$rootScope, @$location) ->
     @$rootScope.$on '$locationChangeSuccess', => @changeTheme()
+    @$rootScope.$on '$realtimeEventReceived', => @$rootScope.$digest()
 
 module.exports = AppController

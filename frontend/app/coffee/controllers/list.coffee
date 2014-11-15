@@ -59,5 +59,4 @@ class ListController
     @todos = @$todoManager.getTodos()
 
 
-
 module.exports = ListController
