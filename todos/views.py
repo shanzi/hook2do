@@ -39,6 +39,15 @@ class ToDoItemViewSet(viewsets.ModelViewSet):
         serializer = TimeLogEntrySerializer(log_entry)
         return Response(serializer.data)
 
+    @detail_route(methods=['get'])
+    def end_tracking(self, request, pk=None):
+        item = get_object_or_404(ToDoItem, pk=pk)
+        log_entry = TimeLogEntry.finish(item)
+        if not log_entry:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        serializer = TimeLogEntrySerializer(log_entry)
+        return Response(serializer.data)
+
 
 class TimeLogEntryViewSet(viewsets.ModelViewSet):
 
