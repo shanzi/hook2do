@@ -99,3 +99,13 @@ REST_FRAMEWORK = {
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+# Pusher settings
+
+PUSHER_APP_ID = '96723'
+
+PUSHER_KEY = 'd16e07d8451c2b4af29c'
+
+PUSHER_SECRET = '704facc84dd7b4f8d28a'
+
+PUSHER_CHANNEL = 'todo_item'

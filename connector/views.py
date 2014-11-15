@@ -56,7 +56,8 @@ class ResourceToDoItemViewSet(viewsets.ModelViewSet):
                 serializer = ResourceToDoItemForOthersSerializer(m)
                 return Response(serializer.data)
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        except:
+        except Exception as e:
+            print e
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
@@ -78,6 +79,7 @@ class ResourceToDoItemViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         try:
             m = ResourceIdMapping.get(kwargs['token'], kwargs['resource_id'])
+            m.todoItem.delete()
             m.delete()
             return Response(status=status.HTTP_200_OK)
         except:
