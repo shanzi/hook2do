@@ -30,3 +30,12 @@ class ResourceToDoItemForOthersSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourceIdMapping
         exclude = ('owner', 'todoItem')
+
+
+class ResourceToDoItemUpdateSerializer(serializers.ModelSerializer):
+
+    content = serializers.CharField(max_length=1024, source='content')
+
+    class Meta:
+        model = ResourceIdMapping
+        exclude = ('owner', 'todoItem', 'resource_id')

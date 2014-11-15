@@ -1,11 +1,12 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
 
 from todos.models import ToDoItemList
 from .models import ResourceChannel, ResourceIdMapping
 from .serializers import ResourceChannelSerializer, ResourceChannelListSerializer, \
-    ResourceToDoItemSerializer, ResourceToDoItemForOthersSerializer
+    ResourceToDoItemSerializer, ResourceToDoItemForOthersSerializer, ResourceToDoItemUpdateSerializer
 
 
 class ResourceChannelViewSet(viewsets.ModelViewSet):
@@ -62,3 +63,19 @@ class ResourceToDoItemViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def update(self, request, *args, **kwargs):
+        try:
+            serializer = ResourceToDoItemUpdateSerializer(data=request.DATA)
+            if serializer.is_valid():
+                m = ResourceIdMapping.get(kwargs["token"],
+                                          kwargs["resource_id"])
+                m.todoItem.content = serializer.data["content"]
+                m.todoItem.save()
+                serializer = ResourceToDoItemForOthersSerializer(m)
+                return Response(serializer.data)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
