@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from .models import ToDoItem, TimeLogEntry
 from .serializers import ToDoItemListSerializer, ToDoItemSerializer, TimeLogEntrySerializer
 
+
 class ToDoItemListViewSet(viewsets.ModelViewSet):
 
     """API viewsets to retrieve and modify ToDoItemList"""
@@ -37,3 +38,10 @@ class ToDoItemViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = TimeLogEntrySerializer(log_entry)
         return Response(serializer.data)
+
+
+class TimeLogEntryViewSet(viewsets.ModelViewSet):
+
+    queryset = TimeLogEntry.objects.all()
+
+    serializer_class = TimeLogEntrySerializer
