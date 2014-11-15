@@ -8,7 +8,7 @@ class DoneController extends ListController
   _todoFilter: (value, index) ->
     value.status == "archived"
 
-  constructor: ($todoManager) -> super($todoManager)
+  constructor: ($todoManager, $mdDialog) -> super($todoManager, $mdDialog)
 
 
 module.exports = DoneController

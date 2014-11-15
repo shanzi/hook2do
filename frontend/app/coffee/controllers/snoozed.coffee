@@ -8,6 +8,6 @@ class SnoozedController extends ListController
   _todoFilter: (value, index) ->
     value.status == 'scheduled'
 
-  constructor: ($todoManager) -> super($todoManager)
+  constructor: ($todoManager, $mdDialog) -> super($todoManager, $mdDialog)
 
 module.exports = SnoozedController

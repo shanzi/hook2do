@@ -1,15 +1,12 @@
+SnoozeDialogController = require './snooze_dialog'
 
 class ListController
   listClass: 'list'
 
   showActions: true
 
-  constructor: (@$todoManager, $routeParams) ->
-    @list_id = parseInt($routeParams.id) if $routeParams
-    @todos = @$todoManager.getTodos()
-
   _todoFilter: (value, index) ->
-    value.itemlist == @list_id
+    value.itemlist == @list_id and value.status == 'default'
 
   todoFilter: ->
     return (value, index) => @_todoFilter(value, index)
@@ -30,6 +27,37 @@ class ListController
       setTimeout focusInput, 100
 
   doneAll: ->
+
+  todoDone: (todo) ->
+    if todo.status == "archived"
+      if todo.due_at
+        todo.status = "scheduled"
+      else
+        todo.status = "default"
+    else
+      todo.status = "archived"
+    todo.$update()
+
+  todoSnooze: (todo) ->
+    @$mdDialog.show(
+      templateUrl: '/static/templates/snooze_picker.html'
+      controller: SnoozeDialogController
+      controllerAs: 'snooze'
+      ).then (answer) =>
+        todo.due_at = answer
+        if todo.due_at
+          todo.status = "scheduled"
+        else
+          todo.status = "default"
+        todo.$update()
+
+  todoDelete: (todo) ->
+    @$todoManager.deleteTodo(todo)
+
+  constructor: (@$todoManager, @$mdDialog, $routeParams) ->
+    @list_id = parseInt($routeParams.id) if $routeParams
+    @todos = @$todoManager.getTodos()
+
 
 
 module.exports = ListController

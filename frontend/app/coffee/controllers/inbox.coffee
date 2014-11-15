@@ -6,7 +6,7 @@ class InboxController extends ListController
   _todoFilter: (value, index) ->
     value.itemlist == null and value.status == 'default'
 
-  constructor: ($todoManager) -> super($todoManager)
+  constructor: ($todoManager, $mdDialog) -> super($todoManager, $mdDialog)
 
 
 module.exports = InboxController

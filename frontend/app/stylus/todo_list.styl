@@ -80,3 +80,24 @@ gradient-group(sr, sg, sb, er, eg, eb)
   gradient-group(75, 167, 55, 134, 212, 100)
   .todo-content
     color #fff
+
+.todo-item-actions
+  cursor pointer
+  float right
+  width 30px
+  margin-right -60px
+  margin-top -15px
+  opacity 0
+  transition opacity 0.2s ease-out
+
+  .todo-item-done
+    color #8BC34A
+
+  .todo-item-snooze
+    color #FBC02D
+
+  .todo-item-delete
+    color #E65100
+
+.todo-item:hover .todo-item-actions
+  opacity 1
