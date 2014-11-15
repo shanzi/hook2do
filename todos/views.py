@@ -7,6 +7,7 @@ from .models import ToDoItem, TimeLogEntry
 from .serializers import ToDoItemListSerializer, ToDoItemSerializer, TimeLogEntrySerializer
 
 
+
 class ToDoItemListViewSet(viewsets.ModelViewSet):
 
     """API viewsets to retrieve and modify ToDoItemList"""

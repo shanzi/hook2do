@@ -2,7 +2,7 @@ import os
 import base64
 from django.db import models
 
-from todos.models import ToDoItemList
+from todos.models import ToDoItem, ToDoItemList
 
 
 class ResourceChannel(models.Model):
@@ -23,3 +23,10 @@ class ResourceChannel(models.Model):
         _token = ResourceChannel.generate_a_token()
         r = ResourceChannel.objects.create(token=_token, todoList=lst)
         return r
+
+
+class ResourceIdMapping(models.Model):
+
+    owner = models.ForeignKey(ResourceChannel)
+    resource_id = models.CharField(max_length=32)
+    todoItem = models.ForeignKey(ToDoItem)

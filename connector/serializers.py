@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import ResourceChannel
+from todos.models import ToDoItem
+from .models import ResourceChannel, ResourceIdMapping
 
 
 class ResourceChannelSerializer(serializers.ModelSerializer):
@@ -14,3 +15,9 @@ class ResourceChannelListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResourceChannel
+
+
+class ResourceToDoItemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ResourceIdMapping

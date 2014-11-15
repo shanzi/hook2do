@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 from todos.models import ToDoItemList
-from .models import ResourceChannel
-from .serializers import ResourceChannelSerializer, ResourceChannelListSerializer
+from .models import ResourceChannel, ResourceIdMapping
+from .serializers import ResourceChannelSerializer, ResourceChannelListSerializer, ResourceToDoItemSerializer
 
 
 class ResourceChannelViewSet(viewsets.ModelViewSet):
@@ -29,3 +29,14 @@ class ResourceChannelViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         serializer = ResourceChannelListSerializer(self.queryset, many=True)
         return Response(serializer.data)
+
+
+class ResourceToDoItemViewSet(viewsets.ModelViewSet):
+
+    serializer_class = ResourceToDoItemSerializer
+
+    queryset = ResourceIdMapping.objects.all()
+
+    lookup_field = 'resource_id'
+
+    lookup_value_regex = '[0-9a-f]{1,32}'
