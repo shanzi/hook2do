@@ -30,3 +30,26 @@ class ResourceIdMapping(models.Model):
     owner = models.ForeignKey(ResourceChannel)
     resource_id = models.CharField(max_length=32)
     todoItem = models.ForeignKey(ToDoItem)
+
+    def item_id(self):
+        return self.owner.token + self.resource_id
+
+    def token(self):
+        return self.owner.token
+
+    def content(self):
+        return self.todoItem.content
+
+    @staticmethod
+    def create(token, resource_id, content):
+        channel = ResourceChannel.objects.filter(token=token)
+        item = channel.todoList.todos.create(content=content)
+        mapping = ResourceIdMapping.objects.create(owner=channel,
+                                                   resource_id=resource_id,
+                                                   todoItem=item)
+        return mapping
+
+    @staticmethod
+    def get(token, resource_id):
+        return ResourceIdMapping.objects.get(owner__token=token,
+                                             resource_id=resource_id)

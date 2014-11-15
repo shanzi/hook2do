@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from todos.models import ToDoItem
 from .models import ResourceChannel, ResourceIdMapping
 
 
@@ -21,3 +20,13 @@ class ResourceToDoItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResourceIdMapping
+
+
+class ResourceToDoItemForOthersSerializer(serializers.ModelSerializer):
+
+    token = serializers.CharField(max_length=32, source='token')
+    content = serializers.CharField(max_length=1024, source='content')
+
+    class Meta:
+        model = ResourceIdMapping
+        exclude = ('owner', 'todoItem')

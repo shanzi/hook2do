@@ -4,7 +4,8 @@ from django.shortcuts import get_object_or_404
 
 from todos.models import ToDoItemList
 from .models import ResourceChannel, ResourceIdMapping
-from .serializers import ResourceChannelSerializer, ResourceChannelListSerializer, ResourceToDoItemSerializer
+from .serializers import ResourceChannelSerializer, ResourceChannelListSerializer, \
+    ResourceToDoItemSerializer, ResourceToDoItemForOthersSerializer
 
 
 class ResourceChannelViewSet(viewsets.ModelViewSet):
@@ -39,4 +40,25 @@ class ResourceToDoItemViewSet(viewsets.ModelViewSet):
 
     lookup_field = 'resource_id'
 
-    lookup_value_regex = '[0-9a-f]{1,32}'
+    lookup_value_regex = '.{1,32}'
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = ResourceToDoItemForOthersSerializer(data=request.DATA)
+            if serializer.is_valid():
+                m = ResourceIdMapping.create(serializer.data["token"],
+                                             serializer.data["resource_id"],
+                                             serializer.data["content"])
+                serializer = ResourceToDoItemForOthersSerializer(m)
+                return Response(serializer.data)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            m = ResourceIdMapping.get(kwargs['token'], kwargs['resource_id'])
+            serializer = ResourceToDoItemForOthersSerializer(m)
+            return Response(serializer.data)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)

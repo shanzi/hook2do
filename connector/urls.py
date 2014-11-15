@@ -7,7 +7,7 @@ from .views import ResourceChannelViewSet, ResourceToDoItemViewSet
 router = DefaultRouter()
 
 router.register('channels', ResourceChannelViewSet, base_name='channels')
-router.register('todos', ResourceToDoItemViewSet, base_name='todos')
+router.register('todos/(?P<token>.{1,32})', ResourceToDoItemViewSet, base_name='todos')
 
 urlpatterns = patterns(
     '', 
