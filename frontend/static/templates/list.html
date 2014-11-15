@@ -8,7 +8,11 @@
     </md-button>
   </div>
   <div ng-class="list.listClass" class="todo-list">
-    <div ng-repeat="todo in list.todos|filter: list.todoFilter()" class="todo-item">
+    <div ng-repeat="todo in list.todos|filter: list.todoFilter()" class="todo-item"
+      ng-swipe-left="list.todoDelete(todo)"
+      ng-swipe-right="list.todoDone(todo)"
+      ng-dblclick="list.todoSnooze(todo)"
+      >
       <div class="todo-item-actions">
         <div class="todo-item-done" ng-click="list.todoDone(todo)">
           <i class="fa fa-check"></i>
