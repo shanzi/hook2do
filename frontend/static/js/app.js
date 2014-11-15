@@ -82,6 +82,11 @@ AppController = (function() {
         return _this.changeTheme();
       };
     })(this));
+    this.$rootScope.$on('$realtimeEventReceived', (function(_this) {
+      return function() {
+        return _this.$rootScope.$digest();
+      };
+    })(this));
   }
 
   return AppController;
@@ -450,8 +455,9 @@ RES_SETUP = {
 };
 
 TodoManager = (function() {
-  function TodoManager($resource) {
+  function TodoManager($resource, $rootScope) {
     this.$resource = $resource;
+    this.$rootScope = $rootScope;
     this._ListsRes = this.$resource('/api/lists/:id/', {
       id: '@id'
     }, RES_SETUP);
@@ -516,12 +522,114 @@ TodoManager = (function() {
     return todoItem.$delete();
   };
 
+  TodoManager.prototype._digest = function() {
+    return this.$rootScope.$broadcast('$realtimeEventReceived');
+  };
+
+  TodoManager.prototype.createToDoEvent = function(data) {
+    var k, newDate, oldDate, oldTodo, _i, _len, _ref;
+    oldTodo = _.findWhere(this.todos, {
+      id: data.id
+    });
+    if (oldTodo) {
+      oldDate = new Date(oldTodo.updated_at);
+      newDate = new Date(data.updated_at);
+      if (newDate <= oldDate) {
+        return;
+      }
+      _ref = _.keys(data);
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        k = _ref[_i];
+        oldTodo[k] = data[k];
+      }
+    } else {
+      this.todos.unshift(new this._TodosRes(data));
+    }
+    return this._digest();
+  };
+
+  TodoManager.prototype.updateToDoEvent = function(data) {
+    return this.createToDoEvent(data);
+  };
+
+  TodoManager.prototype.deleteToDoEvent = function(data) {
+    var oldTodo;
+    oldTodo = _.findWhere(this.todos, {
+      id: data.id
+    });
+    if (oldTodo) {
+      return this.deleteTodo(oldTodo);
+    }
+  };
+
+  TodoManager.prototype.createToDoListEvent = function(data) {
+    var k, newDate, oldDate, oldList, v;
+    console.log(data);
+    oldList = _.findWhere(this.lists, {
+      id: data.id
+    });
+    if (oldList) {
+      oldDate = new Date(oldList.updated_at);
+      newDate = new Date(data.updated_at);
+      if (newDate <= oldDate) {
+        return;
+      }
+      for (k in data) {
+        v = data[k];
+        oldList[k] = v;
+      }
+    } else {
+      this.lists.unshift(new this._ListsRes(data));
+    }
+    return this._digest();
+  };
+
+  TodoManager.prototype.updateToDoListEvent = function(data) {
+    return this.createToDoListEvent(data);
+  };
+
+  TodoManager.prototype.deleteToDoListEvent = function(data) {
+    var oldList;
+    oldList = _.findWhere(this.lists, {
+      id: data.id
+    });
+    if (oldList) {
+      return this.deleteList(oldList);
+    }
+  };
+
   return TodoManager;
 
 })();
 
-module.exports = function($resource) {
-  return new TodoManager($resource);
+module.exports = function($resource, $rootScope) {
+  var channelname, defaultChannel, pusher, todoManager;
+  todoManager = new TodoManager($resource, $rootScope);
+  pusher = new Pusher('d16e07d8451c2b4af29c');
+  channelname = 'h2d-' + $('meta[name=username]').attr('content');
+  console.log(channelname);
+  defaultChannel = pusher.subscribe(channelname);
+  defaultChannel.bind('update_todo', (function(_this) {
+    return function(data) {
+      return todoManager.updateToDoEvent(data);
+    };
+  })(this));
+  defaultChannel.bind('delete_todo', (function(_this) {
+    return function(data) {
+      return todoManager.deleteToDoEvent(data);
+    };
+  })(this));
+  defaultChannel.bind('update_list', (function(_this) {
+    return function(data) {
+      return todoManager.updateToDoListEvent(data);
+    };
+  })(this));
+  defaultChannel.bind('delete_list', (function(_this) {
+    return function(data) {
+      return todoManager.deleteToDoListEvent(data);
+    };
+  })(this));
+  return todoManager;
 };
 
 

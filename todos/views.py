@@ -5,9 +5,14 @@ from django.shortcuts import get_object_or_404
 from django.db.models.signals import post_save, post_delete
 from django.utils import timezone
 
-from .pushers import push_create_or_update, push_delete
-from .models import ToDoItem, TimeLogEntry
+from .models import ToDoItem, ToDoItemList, TimeLogEntry
 from .serializers import ToDoItemListSerializer, ToDoItemSerializer, TimeLogEntrySerializer
+from .pushers import (
+    push_create_or_update_todo,
+    push_create_or_update_list,
+    push_delete_todo,
+    push_delete_list,
+)
 
 
 class ToDoItemListViewSet(viewsets.ModelViewSet):
@@ -58,9 +63,11 @@ class ToDoItemViewSet(viewsets.ModelViewSet):
         serializer = ToDoItemSerializer(items, many=True)
         return Response(serializer.data)
 
-post_save.connect(push_create_or_update, sender=ToDoItem)
+post_save.connect(push_create_or_update_todo, sender=ToDoItem)
+post_save.connect(push_create_or_update_list, sender=ToDoItemList)
 
-post_delete.connect(push_delete, sender=ToDoItem)
+post_delete.connect(push_delete_todo, sender=ToDoItem)
+post_delete.connect(push_delete_list, sender=ToDoItemList)
 
 
 class TimeLogEntryViewSet(viewsets.ModelViewSet):

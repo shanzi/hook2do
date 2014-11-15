@@ -6,7 +6,7 @@ def home(request):
     if not request.user.is_authenticated():
         return render_to_response('home.html')
     csrfContext = RequestContext(request)
-    return render_to_response('app.html', csrfContext)
+    return render_to_response('app.html', {'username': request.user.username}, csrfContext)
 
 
 def signup(request):

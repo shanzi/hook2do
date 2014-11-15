@@ -37,6 +37,7 @@ gulp.task 'jsdeps', ->
     './bower_components/angular-material/angular-material.min.js'
     './bower_components/angular-resource/angular-resource.min.js'
     './bower_components/angular-loading-bar/build/loading-bar.min.js'
+    './bower_components/pusher/dist/pusher.min.js'
     ])
     .pipe concat('deps.js')
     .pipe gulp.dest("#{BUILD}/js")
