@@ -40,6 +40,9 @@ class ResourceIdMapping(models.Model):
     def content(self):
         return self.todoItem.content
 
+    def status(self):
+        return self.todoItem.status
+
     @staticmethod
     def create(token, resource_id, content):
         channel = ResourceChannel.objects.filter(token=token)

@@ -71,6 +71,7 @@ class ResourceToDoItemViewSet(viewsets.ModelViewSet):
                 m = ResourceIdMapping.get(kwargs["token"],
                                           kwargs["resource_id"])
                 m.todoItem.content = serializer.data["content"]
+                m.todoItem.status = serializer.data["status"]
                 m.todoItem.save()
                 serializer = ResourceToDoItemForOthersSerializer(m)
                 return Response(serializer.data)
