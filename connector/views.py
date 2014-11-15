@@ -67,6 +67,14 @@ class ResourceToDoItemViewSet(viewsets.ModelViewSet):
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+    def list(self, request, *args, **kwargs):
+        try:
+            m = ResourceIdMapping.list(kwargs['token'])
+            serializer = ResourceToDoItemForOthersSerializer(m, many=True)
+            return Response(serializer.data)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
     def update(self, request, *args, **kwargs):
         try:
             serializer = ResourceToDoItemUpdateSerializer(data=request.DATA)

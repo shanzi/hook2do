@@ -56,3 +56,7 @@ class ResourceIdMapping(models.Model):
     def get(token, resource_id):
         return ResourceIdMapping.objects.get(owner__token=token,
                                              resource_id=resource_id)
+
+    @staticmethod
+    def list(token):
+        return ResourceIdMapping.objects.filter(owner__token=token).all()
