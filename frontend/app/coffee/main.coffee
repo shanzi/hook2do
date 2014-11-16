@@ -8,6 +8,7 @@ listCtrl = require './controllers/list'
 todoManager = require './todomanager'
 
 angular.module('todoApp', [
+  'ngTouch'
   'ngRoute'
   'ngMaterial'
   'ngResource'
