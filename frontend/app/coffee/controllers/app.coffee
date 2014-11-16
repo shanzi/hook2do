@@ -2,6 +2,7 @@
 
 class AppController
   theme: 'default'
+  title: ''
 
   showMenu: ->
     @$mdSidenav('left').open()
@@ -10,12 +11,16 @@ class AppController
     path = @$location.path()
     if path.match /^\/inbox/
       @theme = 'default'
+      @title = 'Inbox'
     else if path.match /^\/snoozed/
       @theme = 'yellow'
+      @title = 'Snoozed'
     else if path.match /^\/done/
       @theme = 'green'
+      @title = 'Done'
     else if path.match /^\/lists\/(\d+)\/?$/
       @theme = 'grey'
+      @title = 'List'
     else
       @$location.path('/inbox')
 

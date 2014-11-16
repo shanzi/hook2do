@@ -53,6 +53,8 @@ var AppController;
 AppController = (function() {
   AppController.prototype.theme = 'default';
 
+  AppController.prototype.title = '';
+
   AppController.prototype.showMenu = function() {
     return this.$mdSidenav('left').open();
   };
@@ -61,13 +63,17 @@ AppController = (function() {
     var path;
     path = this.$location.path();
     if (path.match(/^\/inbox/)) {
-      return this.theme = 'default';
+      this.theme = 'default';
+      return this.title = 'Inbox';
     } else if (path.match(/^\/snoozed/)) {
-      return this.theme = 'yellow';
+      this.theme = 'yellow';
+      return this.title = 'Snoozed';
     } else if (path.match(/^\/done/)) {
-      return this.theme = 'green';
+      this.theme = 'green';
+      return this.title = 'Done';
     } else if (path.match(/^\/lists\/(\d+)\/?$/)) {
-      return this.theme = 'grey';
+      this.theme = 'grey';
+      return this.title = 'List';
     } else {
       return this.$location.path('/inbox');
     }

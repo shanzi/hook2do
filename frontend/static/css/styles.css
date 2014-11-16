@@ -279,6 +279,7 @@ md-sidenav .section-title {
   border: none;
   background: transparent;
   color: #666;
+  text-overflow: ellipsis;
 }
 .todo-list .todo-item {
   background-color: #fff;
