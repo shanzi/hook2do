@@ -46,6 +46,10 @@ class TodoManager
     @$rootScope.$broadcast '$realtimeEventReceived'
 
   createToDoEvent: (data) ->
+    delayed = => @updateToDoEvent data
+    _.delay delayed, 1000
+
+  updateToDoEvent: (data) ->
     oldTodo = _.findWhere @todos, id: data.id
     if oldTodo
       oldDate = new Date(oldTodo.updated_at)
@@ -57,15 +61,15 @@ class TodoManager
       @todos.unshift new @_TodosRes(data)
     @_digest()
 
-  updateToDoEvent: (data) -> @createToDoEvent data
-
   deleteToDoEvent: (data) ->
     oldTodo = _.findWhere @todos, id: data.id
     @deleteTodo(oldTodo) if oldTodo
 
-
   createToDoListEvent: (data) ->
-    console.log data
+    delayed = => @updateToDoListEvent data
+    _.delay delayed, 1000
+
+  updateToDoListEvent: (data) ->
     oldList = _.findWhere @lists, id: data.id
     if oldList
       oldDate = new Date(oldList.updated_at)
@@ -76,8 +80,6 @@ class TodoManager
     else
       @lists.unshift new @_ListsRes(data)
     @_digest()
-
-  updateToDoListEvent: (data) -> @createToDoListEvent data
 
   deleteToDoListEvent: (data) ->
     oldList = _.findWhere @lists, id: data.id
@@ -93,9 +95,11 @@ module.exports = ($resource, $rootScope) ->
   console.log channelname
   defaultChannel = pusher.subscribe channelname
 
+  defaultChannel.bind 'create_todo', (data) => todoManager.createToDoEvent data
   defaultChannel.bind 'update_todo', (data) => todoManager.updateToDoEvent data
   defaultChannel.bind 'delete_todo', (data) => todoManager.deleteToDoEvent data
 
+  defaultChannel.bind 'create_list', (data) => todoManager.createToDoListEvent data
   defaultChannel.bind 'update_list', (data) => todoManager.updateToDoListEvent data
   defaultChannel.bind 'delete_list', (data) => todoManager.deleteToDoListEvent data
 

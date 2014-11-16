@@ -527,6 +527,16 @@ TodoManager = (function() {
   };
 
   TodoManager.prototype.createToDoEvent = function(data) {
+    var delayed;
+    delayed = (function(_this) {
+      return function() {
+        return _this.updateToDoEvent(data);
+      };
+    })(this);
+    return _.delay(delayed, 1000);
+  };
+
+  TodoManager.prototype.updateToDoEvent = function(data) {
     var k, newDate, oldDate, oldTodo, _i, _len, _ref;
     oldTodo = _.findWhere(this.todos, {
       id: data.id
@@ -548,10 +558,6 @@ TodoManager = (function() {
     return this._digest();
   };
 
-  TodoManager.prototype.updateToDoEvent = function(data) {
-    return this.createToDoEvent(data);
-  };
-
   TodoManager.prototype.deleteToDoEvent = function(data) {
     var oldTodo;
     oldTodo = _.findWhere(this.todos, {
@@ -563,8 +569,17 @@ TodoManager = (function() {
   };
 
   TodoManager.prototype.createToDoListEvent = function(data) {
+    var delayed;
+    delayed = (function(_this) {
+      return function() {
+        return _this.updateToDoListEvent(data);
+      };
+    })(this);
+    return _.delay(delayed, 1000);
+  };
+
+  TodoManager.prototype.updateToDoListEvent = function(data) {
     var k, newDate, oldDate, oldList, v;
-    console.log(data);
     oldList = _.findWhere(this.lists, {
       id: data.id
     });
@@ -582,10 +597,6 @@ TodoManager = (function() {
       this.lists.unshift(new this._ListsRes(data));
     }
     return this._digest();
-  };
-
-  TodoManager.prototype.updateToDoListEvent = function(data) {
-    return this.createToDoListEvent(data);
   };
 
   TodoManager.prototype.deleteToDoListEvent = function(data) {
@@ -609,6 +620,11 @@ module.exports = function($resource, $rootScope) {
   channelname = 'h2d-' + $('meta[name=username]').attr('content');
   console.log(channelname);
   defaultChannel = pusher.subscribe(channelname);
+  defaultChannel.bind('create_todo', (function(_this) {
+    return function(data) {
+      return todoManager.createToDoEvent(data);
+    };
+  })(this));
   defaultChannel.bind('update_todo', (function(_this) {
     return function(data) {
       return todoManager.updateToDoEvent(data);
@@ -617,6 +633,11 @@ module.exports = function($resource, $rootScope) {
   defaultChannel.bind('delete_todo', (function(_this) {
     return function(data) {
       return todoManager.deleteToDoEvent(data);
+    };
+  })(this));
+  defaultChannel.bind('create_list', (function(_this) {
+    return function(data) {
+      return todoManager.createToDoListEvent(data);
     };
   })(this));
   defaultChannel.bind('update_list', (function(_this) {
