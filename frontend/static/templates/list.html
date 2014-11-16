@@ -31,6 +31,9 @@
       ng-attr-id="todo-id-{{ todo.id }}"
       autocomplete="off"
       ></input>
+      <span class="todo-due-date" ng-if="todo.status=='scheduled'"
+        ng-bind="todo.due_at|date: 'short'"
+        ></span>
     </div>
   </div>
 </div>

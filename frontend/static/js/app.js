@@ -395,21 +395,25 @@ SnoozeDialogController = (function() {
     if (now.getHours() < 19) {
       laterToday = new Date();
       laterToday.setHours(19);
+      laterToday.setMinutes(0);
       this.addChoice('Later Today', laterToday);
     }
     tomorrow = new Date();
     tomorrow.setHours(8);
     tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setMinutes(0);
     this.addChoice('Tomorrow', tomorrow);
     if ((1 < (_ref = now.getDay()) && _ref < 6)) {
       thisWeekend = new Date();
       thisWeekend.setHours(8);
       thisWeekend.setDate(thisWeekend.getDate() + 6 - now.getDay());
+      thisWeekend.setMinutes(0);
       this.addChoice('This Weekend', thisWeekend);
     }
     nextWeek = new Date();
     nextWeek.setHours(8);
     nextWeek.setDate(nextWeek.getDate() + 8 - now.getDay());
+    nextWeek.setMinutes(0);
     this.addChoice('Next Week', nextWeek);
   }
 

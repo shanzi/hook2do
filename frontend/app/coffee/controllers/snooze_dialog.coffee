@@ -21,24 +21,27 @@ class SnoozeDialogController
     if now.getHours() < 19
       laterToday = new Date()
       laterToday.setHours(19)
+      laterToday.setMinutes(0)
       @addChoice 'Later Today', laterToday
 
     tomorrow = new Date()
     tomorrow.setHours 8
     tomorrow.setDate tomorrow.getDate() + 1
+    tomorrow.setMinutes(0)
     @addChoice 'Tomorrow', tomorrow
 
     if 1 < now.getDay() < 6
       thisWeekend = new Date()
       thisWeekend.setHours 8
       thisWeekend.setDate thisWeekend.getDate() + 6 - now.getDay()
+      thisWeekend.setMinutes 0
       @addChoice 'This Weekend', thisWeekend
 
     nextWeek = new Date()
     nextWeek.setHours 8
     nextWeek.setDate nextWeek.getDate() + 8 - now.getDay()
+    nextWeek.setMinutes 0
     @addChoice 'Next Week', nextWeek
-    
   
 
 module.exports = SnoozeDialogController
