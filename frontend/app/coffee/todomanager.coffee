@@ -1,4 +1,4 @@
-
+notification = require './notification'
 
 RES_SETUP =
   update:
@@ -57,6 +57,9 @@ class TodoManager
       return if newDate <= oldDate
       for k in _.keys data
         oldTodo[k] = data[k]
+      createdDate = new Date(data.created_at)
+      if newDate.valueOf() - createdDate.valueOf() < 10000
+        notification.show 'To-Do: ' + data.content
     else
       @todos.unshift new @_TodosRes(data)
     @_digest()
@@ -77,6 +80,9 @@ class TodoManager
       return if newDate <= oldDate
       for k, v of data
         oldList[k] = v
+      createdDate = new Date(data.created_at)
+      if newDate.valueOf() - createdDate.valueOf() < 10000
+        notification.show 'List: ' + data.content
     else
       @lists.unshift new @_ListsRes(data)
     @_digest()

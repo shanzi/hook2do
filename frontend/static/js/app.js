@@ -47,7 +47,7 @@ angular.module('todoApp', ['ngRoute', 'ngMaterial', 'ngResource', 'ngFx', 'angul
 
 
 
-},{"./controllers/app":2,"./controllers/done":3,"./controllers/inbox":4,"./controllers/list":5,"./controllers/menu":6,"./controllers/snoozed":8,"./todomanager":9}],2:[function(require,module,exports){
+},{"./controllers/app":2,"./controllers/done":3,"./controllers/inbox":4,"./controllers/list":5,"./controllers/menu":6,"./controllers/snoozed":8,"./todomanager":10}],2:[function(require,module,exports){
 var AppController;
 
 AppController = (function() {
@@ -452,7 +452,40 @@ module.exports = SnoozedController;
 
 
 },{"./list":5}],9:[function(require,module,exports){
-var RES_SETUP, TodoManager;
+var NotificationManager;
+
+NotificationManager = (function() {
+  function NotificationManager() {
+    if (window.Notification && Notification.permission !== 'granted') {
+      Notification.requestPermission((function(_this) {
+        return function(status) {
+          if (Notification.status !== status) {
+            return Notification.status = status;
+          }
+        };
+      })(this));
+    }
+  }
+
+  NotificationManager.prototype.show = function(noti) {
+    var n;
+    if (window.Notification && Notification.permission === 'granted') {
+      return n = new Notification(noti);
+    }
+  };
+
+  return NotificationManager;
+
+})();
+
+module.exports = new NotificationManager();
+
+
+
+},{}],10:[function(require,module,exports){
+var RES_SETUP, TodoManager, notification;
+
+notification = require('./notification');
 
 RES_SETUP = {
   update: {
@@ -543,7 +576,7 @@ TodoManager = (function() {
   };
 
   TodoManager.prototype.updateToDoEvent = function(data) {
-    var k, newDate, oldDate, oldTodo, _i, _len, _ref;
+    var createdDate, k, newDate, oldDate, oldTodo, _i, _len, _ref;
     oldTodo = _.findWhere(this.todos, {
       id: data.id
     });
@@ -557,6 +590,10 @@ TodoManager = (function() {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         k = _ref[_i];
         oldTodo[k] = data[k];
+      }
+      createdDate = new Date(data.created_at);
+      if (newDate.valueOf() - createdDate.valueOf() < 10000) {
+        notification.show('To-Do: ' + data.content);
       }
     } else {
       this.todos.unshift(new this._TodosRes(data));
@@ -585,7 +622,7 @@ TodoManager = (function() {
   };
 
   TodoManager.prototype.updateToDoListEvent = function(data) {
-    var k, newDate, oldDate, oldList, v;
+    var createdDate, k, newDate, oldDate, oldList, v;
     oldList = _.findWhere(this.lists, {
       id: data.id
     });
@@ -598,6 +635,10 @@ TodoManager = (function() {
       for (k in data) {
         v = data[k];
         oldList[k] = v;
+      }
+      createdDate = new Date(data.created_at);
+      if (newDate.valueOf() - createdDate.valueOf() < 10000) {
+        notification.show('List: ' + data.content);
       }
     } else {
       this.lists.unshift(new this._ListsRes(data));
@@ -661,4 +702,4 @@ module.exports = function($resource, $rootScope) {
 
 
 
-},{}]},{},[1]);
+},{"./notification":9}]},{},[1]);
