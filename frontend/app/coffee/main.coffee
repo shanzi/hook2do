@@ -12,6 +12,7 @@ angular.module('todoApp', [
   'ngMaterial'
   'ngResource'
 
+  'ngFx'
   'angular-loading-bar'
   ])
 

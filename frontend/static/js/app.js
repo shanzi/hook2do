@@ -15,7 +15,7 @@ listCtrl = require('./controllers/list');
 
 todoManager = require('./todomanager');
 
-angular.module('todoApp', ['ngRoute', 'ngMaterial', 'ngResource', 'angular-loading-bar']).factory('$todoManager', todoManager).controller('appCtrl', appCtrl).controller('menuCtrl', menuCtrl).controller('inboxCtrl', inboxCtrl).controller('snoozedCtrl', snoozedCtrl).controller('doneCtrl', doneCtrl).controller('listCtrl', listCtrl).config(function($routeProvider) {
+angular.module('todoApp', ['ngRoute', 'ngMaterial', 'ngResource', 'ngFx', 'angular-loading-bar']).factory('$todoManager', todoManager).controller('appCtrl', appCtrl).controller('menuCtrl', menuCtrl).controller('inboxCtrl', inboxCtrl).controller('snoozedCtrl', snoozedCtrl).controller('doneCtrl', doneCtrl).controller('listCtrl', listCtrl).config(function($routeProvider) {
   return $routeProvider.when('/inbox', {
     templateUrl: '/static/templates/list.html',
     controller: 'inboxCtrl',
